@@ -51,11 +51,8 @@ export default function AdminDashboard() {
     return store?.name || 'Unknown';
   };
 
-  const getPositionTitles = (positionIds: string[]) => {
-    return positionIds
-      .map(id => positions.find(p => p.id === id)?.title)
-      .filter(Boolean)
-      .join(', ') || 'N/A';
+  const getPositionTitles = (positionTitles: string[]) => {
+    return positionTitles.length > 0 ? positionTitles.join(', ') : 'N/A';
   };
 
   const toggleExpand = (appId: string) => {
@@ -188,13 +185,17 @@ export default function AdminDashboard() {
                           </div>
                           <div>
                             <span className="text-gray-600">Available Days:</span>
-                            <span className="ml-2 font-medium">{app.available_days.join(', ') || 'N/A'}</span>
+                            <span className="ml-2 font-medium">{app.available_days.length > 0 ? app.available_days.join(', ') : 'N/A'}</span>
+                          </div>
+                          <div>
+                            <span className="text-gray-600">Location Flexibility:</span>
+                            <span className="ml-2 font-medium">{app.location_flexibility || 'N/A'}</span>
                           </div>
                         </div>
                       </div>
 
                       <div>
-                        <h4 className="font-semibold text-gray-800 mb-3">Experience & Skills</h4>
+                        <h4 className="font-semibold text-gray-800 mb-3">General Information</h4>
                         <div className="space-y-2 text-sm">
                           <div>
                             <span className="text-gray-600">Transportation:</span>
@@ -210,6 +211,12 @@ export default function AdminDashboard() {
                               <span className="ml-2 font-medium">{app.license_type}</span>
                             </div>
                           )}
+                          {app.license_state && (
+                            <div>
+                              <span className="text-gray-600">License State:</span>
+                              <span className="ml-2 font-medium">{app.license_state}</span>
+                            </div>
+                          )}
                           {app.computer_skill_level && (
                             <div>
                               <span className="text-gray-600">Computer Skills:</span>
@@ -222,14 +229,150 @@ export default function AdminDashboard() {
                       {app.work_experience && (
                         <div className="md:col-span-2">
                           <h4 className="font-semibold text-gray-800 mb-2">Work Experience</h4>
-                          <p className="text-sm text-gray-700 whitespace-pre-wrap">{app.work_experience}</p>
+                          <p className="text-sm text-gray-700 whitespace-pre-wrap bg-white p-3 rounded border border-gray-200">{app.work_experience}</p>
                         </div>
                       )}
 
                       {app.mechanical_experience && (
                         <div className="md:col-span-2">
                           <h4 className="font-semibold text-gray-800 mb-2">Mechanical Experience</h4>
-                          <p className="text-sm text-gray-700 whitespace-pre-wrap">{app.mechanical_experience}</p>
+                          <p className="text-sm text-gray-700 whitespace-pre-wrap bg-white p-3 rounded border border-gray-200">{app.mechanical_experience}</p>
+                        </div>
+                      )}
+
+                      {app.equipment_exposure && app.equipment_exposure.length > 0 && (
+                        <div>
+                          <h4 className="font-semibold text-gray-800 mb-2">Equipment Exposure</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {app.equipment_exposure.map((eq, idx) => (
+                              <span key={idx} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">{eq}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {app.equipment_repair && app.equipment_repair.length > 0 && (
+                        <div>
+                          <h4 className="font-semibold text-gray-800 mb-2">Equipment Repair Skills</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {app.equipment_repair.map((eq, idx) => (
+                              <span key={idx} className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">{eq}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {app.equipment_operated && app.equipment_operated.length > 0 && (
+                        <div>
+                          <h4 className="font-semibold text-gray-800 mb-2">Equipment Operated</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {app.equipment_operated.map((eq, idx) => (
+                              <span key={idx} className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded">{eq}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {app.trailer_experience && app.trailer_experience.length > 0 && (
+                        <div>
+                          <h4 className="font-semibold text-gray-800 mb-2">Trailer Experience</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {app.trailer_experience.map((tr, idx) => (
+                              <span key={idx} className="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded">{tr}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {(app.diagnostic_ability || app.hydraulics_comfort || app.equipment_care || app.customer_facing) && (
+                        <div className="md:col-span-2">
+                          <h4 className="font-semibold text-gray-800 mb-3">Technical Skills Assessment</h4>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            {app.diagnostic_ability && (
+                              <div className="bg-white p-3 rounded border border-gray-200">
+                                <span className="text-xs text-gray-600 block mb-1">Diagnostic Ability</span>
+                                <span className="text-sm font-medium">{app.diagnostic_ability}</span>
+                              </div>
+                            )}
+                            {app.hydraulics_comfort && (
+                              <div className="bg-white p-3 rounded border border-gray-200">
+                                <span className="text-xs text-gray-600 block mb-1">Hydraulics</span>
+                                <span className="text-sm font-medium">{app.hydraulics_comfort}</span>
+                              </div>
+                            )}
+                            {app.equipment_care && (
+                              <div className="bg-white p-3 rounded border border-gray-200">
+                                <span className="text-xs text-gray-600 block mb-1">Equipment Care</span>
+                                <span className="text-sm font-medium">{app.equipment_care}</span>
+                              </div>
+                            )}
+                            {app.customer_facing && (
+                              <div className="bg-white p-3 rounded border border-gray-200">
+                                <span className="text-xs text-gray-600 block mb-1">Customer Service</span>
+                                <span className="text-sm font-medium">{app.customer_facing}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {(app.moving_violations || app.dui_dwi || app.license_suspended || app.can_be_insured) && (
+                        <div className="md:col-span-2">
+                          <h4 className="font-semibold text-gray-800 mb-3">Driving Record</h4>
+                          <div className="bg-white p-4 rounded border border-gray-200 space-y-2 text-sm">
+                            {app.moving_violations && (
+                              <div>
+                                <span className="text-gray-600">Moving Violations:</span>
+                                <span className="ml-2 font-medium">{app.moving_violations}</span>
+                              </div>
+                            )}
+                            {app.dui_dwi && (
+                              <div>
+                                <span className="text-gray-600">DUI/DWI:</span>
+                                <span className="ml-2 font-medium">{app.dui_dwi}</span>
+                              </div>
+                            )}
+                            {app.license_suspended && (
+                              <div>
+                                <span className="text-gray-600">License Suspended:</span>
+                                <span className="ml-2 font-medium">{app.license_suspended}</span>
+                              </div>
+                            )}
+                            {app.can_be_insured && (
+                              <div>
+                                <span className="text-gray-600">Can Be Insured:</span>
+                                <span className="ml-2 font-medium">{app.can_be_insured}</span>
+                              </div>
+                            )}
+                            {app.driving_notes && (
+                              <div>
+                                <span className="text-gray-600">Additional Notes:</span>
+                                <p className="mt-1 text-gray-700">{app.driving_notes}</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {app.computer_skills && app.computer_skills.length > 0 && (
+                        <div>
+                          <h4 className="font-semibold text-gray-800 mb-2">Computer Skills</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {app.computer_skills.map((skill, idx) => (
+                              <span key={idx} className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">{skill}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {app.systems_used && app.systems_used.length > 0 && (
+                        <div>
+                          <h4 className="font-semibold text-gray-800 mb-2">Systems Experience</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {app.systems_used.map((system, idx) => (
+                              <span key={idx} className="px-2 py-1 bg-pink-100 text-pink-800 text-xs rounded">{system}</span>
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>
